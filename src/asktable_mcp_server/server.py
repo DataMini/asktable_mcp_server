@@ -2,7 +2,6 @@ from fastmcp import FastMCP, Image,Context
 import io
 from asktable import Asktable
 from src.tools import get_asktable_data,get_asktable_sql
-import yaml
 from fastmcp.server.auth import BearerAuthProvider
 from fastmcp.server.auth.providers.bearer import RSAKeyPair
 import os

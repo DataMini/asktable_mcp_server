@@ -1,7 +1,5 @@
 from asktable import Asktable
 
-import yaml
-
 
 async def get_asktable_data(api_key ,datasource_id, question):
     base_url = "https://api.asktable.com"
