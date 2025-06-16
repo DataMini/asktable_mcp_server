@@ -1,13 +1,13 @@
 from fastmcp import FastMCP, Image,Context
 import io
 from asktable import Asktable
-from src.tools import get_asktable_data,get_asktable_sql
+from asktable_mcp_server.tools import get_asktable_data, get_asktable_sql
 from fastmcp.server.auth import BearerAuthProvider
 from fastmcp.server.auth.providers.bearer import RSAKeyPair
 import os
 import asyncio
 
-mcp = FastMCP(name="Asktable server")
+mcp = FastMCP(name="Asktable mcp server running...")
 
 @mcp.tool()
 async def get_sql(query: str) -> str:
