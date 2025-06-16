@@ -1,13 +1,16 @@
 [project]
 name = "asktable-mcp-server"
 version = "0.1.0"
-description = "Add your description here"
+description = "asktable_mcp_server project"
 readme = "README.md"
 authors = [
-    { name = "chenchengfeng", email = "1258839505@qq.com" }
+    { name = "chenchengfeng", email = "carlos12014@gmail.com" }
 ]
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "asktable>=5.4.0",
+    "fastmcp>=2.8.0"
+]
 
 [project.scripts]
 asktable-mcp-server = "asktable_mcp_server:main"
