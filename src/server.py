@@ -57,5 +57,8 @@ async def get_datasouce_data(query: str) -> str:
     message = await get_asktable_data(api_key = os.getenv('api_key'), datasource_id= os.getenv('datasource_id') ,question = query)
     return message
 
-if __name__ == "__main__":
+def main():
     mcp.run()
+
+if __name__ == "__main__":
+    main()

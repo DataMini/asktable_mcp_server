@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-asktable-mcp-server = "asktable_mcp_server:main"
+asktable-mcp-server = "asktable_mcp_server.server:main"
 
 [build-system]
 requires = ["hatchling"]
