@@ -7,21 +7,12 @@
 
 ## 快速开始
 
-### 安装
+### 安装与配置
+本地先安装uv工具，然后克隆该项目到本地
 
-使用 pip 安装 `asktable-mcp-server`：
-
-```bash
-pip install asktable-mcp-server
-```
-### 运行
-启动 asktable-mcp-server：
-```bash
-asktable-mcp-server
-```
 
 ### 使用
-你可以通过 AskTable 的客户端与 asktable-mcp-server 进行交互，执行查询和获取数据。
+目前支持stdio本地通信，你可以通过 AskTable 的客户端与 asktable-mcp-server 进行交互，执行查询和获取数据。
 
 
 ### MCP Server 配置示例
@@ -32,7 +23,7 @@ asktable-mcp-server
             "command":"uv",
             "args":[
                 "--directory",
-                "asktable-mcp-server",
+                "克隆该项目所在路径/src/asktable-mcp-server/",
                 "run",
                 "server.py"
             ],
