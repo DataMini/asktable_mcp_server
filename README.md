@@ -18,27 +18,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 
 ### MCP Server 配置示例
-#### 本地配置
-使用 VS Code + Cline 或者 Trae
-```json
-{
-    "mcpServers":{
-        "asktable-mcp-server":{
-            "command":"uvx",
-            "args":[
-                "asktable-mcp-server@latest"
-            ],
-            "env":{
-                "api_key": "your api_key",
-                "datasouce_id": "your datasouce_id"
-                 }
-                }
-            }
-}
-```
-
-### MCP Server 配置示例
-#### 阿里云百炼 sse配置
+现已经支持[VS Code + Cline](https://cline.bot/)， [Trae](https://www.trae.com.cn/)， [百炼MCP平台](https://bailian.console.aliyun.com/?spm=5176.29619931.J__Z58Z6CX7MY__Ll8p1ZOR.1.6483521cesAnkN&tab=mcp#/mcp-market)
 ```json
 {
     "mcpServers":{
