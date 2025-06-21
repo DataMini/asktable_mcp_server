@@ -5,6 +5,7 @@ from asktable_mcp_server.tools import get_asktable_data, get_asktable_sql
 from fastmcp.server.auth import BearerAuthProvider
 from fastmcp.server.auth.providers.bearer import RSAKeyPair
 import os
+import argparse
 import asyncio
 
 mcp = FastMCP(name="Asktable mcp server running...")
@@ -81,7 +82,28 @@ async def get_datasouce_data(query: str) -> str:
     return message
 
 def main():
-    mcp.run()
+    # 创建参数解析器
+    parser = argparse.ArgumentParser(description='Asktable MCP Server')
+    parser.add_argument('--transport', 
+                        choices=['stdio', 'sse'], 
+                        default='stdio',
+                        help='选择通信协议: stdio或sse')
+    parser.add_argument('--port', type=int, default=8000,
+                        help='SSE模式使用的端口号')
+    args = parser.parse_args()
+
+    # 根据参数启动不同协议
+    if args.transport == 'stdio':
+        mcp.run()  # 保持原有stdio模式
+    else:
+        # SSE模式需要额外配置
+        mcp.run(
+            transport="sse",
+            port=args.port,
+            sse_path="/asktable-sse",  # 自定义SSE路径
+            log_level="info"
+        )
 
 if __name__ == "__main__":
     main()
+
