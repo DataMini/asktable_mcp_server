@@ -25,11 +25,22 @@ async def get_sql(query: str) -> str:
     
     使用场景：
         - 需要查看生成的SQL语句
-        - 需要手动修改或优化SQL
+        - 需要将自然语言转化为SQL查询
         - 仅需要SQL文本而不需要执行结果
     """
-    # ds_id = datasource_id or default_datasource_id
-    message = await get_asktable_sql(api_key = os.getenv('api_key'), datasource_id= os.getenv('datasource_id') ,question = query)
+    # 构建参数字典
+    params = {
+        'api_key': os.getenv('api_key'),
+        'datasource_id': os.getenv('datasource_id'),
+        'question': query
+    }
+    
+    # 如果环境变量中有base_url，添加到参数中
+    base_url = os.getenv('base_url')
+    if base_url:
+        params['base_url'] = base_url
+    
+    message = await get_asktable_sql(**params)
     return message
 
 
@@ -49,11 +60,24 @@ async def get_datasouce_data(query: str) -> str:
     
     使用场景：
         - 需要直接获取查询答案
+        - 搜索数据库数据
         - 需要查看实际数据结果
-        - 不关心SQL细节，只要最终答案
+        - 不关心SQL细节，只要最终答案与结论
     """
-    # ds_id = datasource_id or default_datasource_id
-    message = await get_asktable_data(api_key = os.getenv('api_key'), datasource_id= os.getenv('datasource_id') ,question = query)
+    # 构建参数字典
+    params = {
+        'api_key': os.getenv('api_key'),
+        'datasource_id': os.getenv('datasource_id'),
+        'question': query
+    }
+    
+    # 如果环境变量中有base_url，添加到参数中
+    base_url = os.getenv('base_url')
+    if base_url:
+        params['base_url'] = base_url
+
+
+    message = await get_asktable_data(**params)
     return message
 
 def main():
