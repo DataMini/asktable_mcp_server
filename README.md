@@ -35,7 +35,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 - `api_key`：AskTable API 密钥（必需，环境变量）
 - `datasource_id`：数据源ID（必需，环境变量）
-- `base_url`：本地服务地址（可选，环境变量，填写则走本地部署）
+- `base_url`：本地IP服务地址（可选，填写则走本地部署）
 - `--transport`：通信协议，`stdio` 或 `sse`
 - `--port`：SSE模式端口（仅SSE时必填）
 
@@ -76,7 +76,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
       "env": {
         "api_key": "your_api_key",
         "datasource_id": "your_datasource_id",
-        "base_url": "http://localhost:8030/api"
+        "base_url": "http://192.168.1.3:8030/api"
       }
     }
   }
@@ -115,7 +115,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
       "env": {
         "api_key": "your_api_key",
         "datasource_id": "your_datasource_id",
-        "base_url": "http://localhost:8030/api"
+        "base_url": "http://192.168.1.3:8030/api"
       }
     }
   }
