@@ -1,12 +1,13 @@
 # asktable-mcp-server
 
-![示例图片](https://s3.bmp.ovh/imgs/2025/06/27/72d58609d7bcb9d1.png){:width="50%"}
 
 [![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 [![PyPI Version](https://img.shields.io/pypi/v/asktable-mcp-server.svg)](https://pypi.org/project/asktable-mcp-server/)
 
 `asktable-mcp-server` 是为 [AskTable](https://www.asktable.com/) 提供的 MCP 服务，支持通过 Stdio 或 SSE 协议与 AskTable SaaS 或本地部署服务交互。
 
+
+![Case](https://s3.bmp.ovh/imgs/2025/06/27/b4b65f0d6e40054e.png)
 ## 快速开始
 
 ### 安装与配置
@@ -27,6 +28,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ---
 
 ## 启动命令示例
+在使用之前需先进行以下配置
 
 - Stdio 模式（本地或SaaS）：
   ```bash
@@ -47,8 +49,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ## 配置示例
 
-> 以下为 `mcpServers` 配置片段，只需根据实际情况选择一种模式即可。
-
+### 配置mcpServers_json
+>以下为 `mcpServers json的配置'，根据实际情况选择对应的模式。
 <details>
 <summary>Stdio + SaaS</summary>
 
@@ -106,9 +108,10 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 </details>
 
 
-
-
+### 配置SSE URL
+```bash
+http://localhost:8095/sse/?apikey=your_apikey&datasouce_id=your_datasouce_id
+```
 ---
 
 如需进一步帮助，请查阅官方文档或联系我们。
-****
