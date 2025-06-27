@@ -15,7 +15,8 @@ logger = logging.getLogger(__name__)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='AskTable MCP Server')
-    parser.add_argument('--base_url', type=str, default=None, help='请求所用的服务器主机地址')
+    parser.add_argument('--base_url', type=str, default=None, help='请求所用的服务器主机地址，填写了则使用指定服务器地址，否则使用默认的AskTable服务地址')
+
     args = parser.parse_args()
     return args
 
@@ -190,4 +191,4 @@ async def gen_conclusion(query: str) -> str:
 
 if __name__ == "__main__":
     args = parse_args()
-    mcp.run(transport="sse", port=8095, path="/sse/")
+    mcp.run(transport="sse", host="0.0.0.0", port=8095, path="/sse/")
