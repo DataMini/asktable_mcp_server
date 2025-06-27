@@ -18,16 +18,14 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ## 2×2 配置方式总览
 
-| 模式          | `--transport` | `--port`（仅SSE） | `base_url` 环境变量         |
-|---------------|--------------|------------------|-----------------------------|
-| Stdio + SaaS  | stdio        | 无               | 不填                        |
-| Stdio + 本地  | stdio        | 无               | 填写本地地址                 |
-| SSE + SaaS    | sse          | 必填             | 不填                        |
-| SSE + 本地    | sse          | 必填             | 填写本地地址                 |
+| 模式          | `transport`  | `base_url` 环境变量         |
+|---------------|--------------|-----------------------------|
+| Stdio + SaaS  | stdio                      | 不填                        |
+| Stdio + 本地  | stdio                      | 填写本地地址                 |
+| SSE + SaaS    | sse                       | 不填                        |
+| SSE + 本地    | sse                      | 填写本地地址                 |
 
-- **Stdio/SSE** 由 `--transport` 决定
 - **SaaS/本地** 由 `base_url` 是否填写决定
-- SSE 必须加 `--port`，Stdio 不需要
 
 ---
 
@@ -35,11 +33,28 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 - `api_key`：AskTable API 密钥（必需，环境变量）
 - `datasource_id`：数据源ID（必需，环境变量）
-- `base_url`：本地IP服务地址（可选，填写则走本地部署）
-- `--transport`：通信协议，`stdio` 或 `sse`
-- `--port`：SSE模式端口（仅SSE时必填）
+- `base_url`：本地IP服务地址（可选，填写则走本地部署，不填则走SaaS）
 
 ---
+
+## 启动命令示例
+
+- Stdio 模式（本地或SaaS）：
+  ```bash
+  uvx asktable-mcp-server@latest --transport stdio
+  ```
+
+- SSE 模式（本地或SaaS）：
+  ```bash
+  #sass版
+  uvx --from asktable-mcp-server@latest python -m asktable_mcp_server.sse_server
+  ```
+  ```bash
+  #本地版
+  uvx --from asktable-mcp-server@latest python -m asktable_mcp_server.sse_server --base_url http://your_ip:port/api
+  ```
+  
+
 
 ## 配置示例
 
@@ -85,57 +100,24 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 </details>
 
 <details>
-<summary>SSE + SaaS</summary>
+<summary>SSE</summary>
 
 ```json
 {
-  "mcpServers": {
+  "mcpServers": {    
     "asktable-mcp-server": {
-      "command": "uvx",
-      "args": ["asktable-mcp-server@latest", "--transport", "sse", "--port", "9000"],
-      "env": {
-        "api_key": "your_api_key",
-        "datasource_id": "your_datasource_id"
-      }
+      "url": "http://localhost:8095/sse/?apikey=your_apikey&datasouce_id=your_datasouce_id",
+      "headers": {},
+      "timeout": 300,
+      "sse_read_timeout": 300
     }
   }
 }
 ```
 </details>
 
-<details>
-<summary>SSE + 本地部署</summary>
 
-```json
-{
-  "mcpServers": {
-    "asktable-mcp-server": {
-      "command": "uvx",
-      "args": ["asktable-mcp-server@latest", "--transport", "sse", "--port", "9000"],
-      "env": {
-        "api_key": "your_api_key",
-        "datasource_id": "your_datasource_id",
-        "base_url": "http://192.168.1.3:8030/api"
-      }
-    }
-  }
-}
-```
-</details>
 
----
-
-## 启动命令示例
-
-- Stdio 模式（本地或SaaS）：
-  ```bash
-  uvx asktable-mcp-server@latest --transport stdio
-  ```
-
-- SSE 模式（本地或SaaS）：
-  ```bash
-  uvx asktable-mcp-server@latest --transport sse --port 9000
-  ```
 
 ---
 

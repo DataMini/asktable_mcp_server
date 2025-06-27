@@ -8,7 +8,7 @@ import os
 import argparse
 import asyncio
 
-mcp = FastMCP(name="Asktable mcp server running...")
+mcp = FastMCP(name="Asktable stdio mcp server running...")
 
 @mcp.tool()
 async def get_sql(query: str) -> str:
@@ -94,7 +94,7 @@ def main():
 
     # 根据参数启动不同协议
     if args.transport == 'stdio':
-        mcp.run()  # 保持原有stdio模式
+        mcp.run(transport='sse')  # 保持原有stdio模式
     else:
         # SSE模式需要额外配置
         mcp.run(
