@@ -42,6 +42,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
   ```
   ```bash
   #本地版
+  #开启服务后会占用本地的8095端口
   uvx --from asktable-mcp-server@latest python -m asktable_mcp_server.sse_server --base_url http://your_local_ip:port/api
   ```
   
@@ -50,7 +51,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ## 配置示例
 
 ### 配置mcpServers_json
->以下为 `mcpServers json的配置'，根据实际情况选择对应的模式。
+>以下对应需要对 `mcpServers json”进行配置的情况，根据你不同的启动命令和平台兼容的方式来选择对应的模式。
 <details>
 <summary>Stdio + SaaS</summary>
 
@@ -82,7 +83,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
       "env": {
         "api_key": "your_api_key",
         "datasource_id": "your_datasource_id",
-        "base_url": "http://192.168.1.3:8030/api"
+        "base_url": "http://your_local_ip:port/api"
       }
     }
   }
