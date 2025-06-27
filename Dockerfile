@@ -10,9 +10,5 @@ RUN apt-get update && apt-get install -y curl && \
 # 暴露默认端口（SSE 模式）
 EXPOSE 9000
 
-# 默认环境变量
-ENV BASE_URL=https://api.asktable.com
-ENV PORT=9000
-
-# 默认使用 sse 模式启动
-CMD ["asktable-mcp-server", "--transport", "sse", "--port", "9000"]
+# 设置容器启动时执行的命令
+CMD ["python", "-m", "asktable_mcp_server.sse_server"]

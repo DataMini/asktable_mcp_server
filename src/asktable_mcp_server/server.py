@@ -11,7 +11,7 @@ import asyncio
 mcp = FastMCP(name="Asktable stdio mcp server running...")
 
 @mcp.tool()
-async def get_sql(query: str) -> str:
+async def gen_sql(query: str) -> str:
     """
     根据用户查询生成对应的SQL语句
     不需要指定数据源ID，该函数已在内部指定了数据源ID，直接发起请求即可
@@ -46,7 +46,7 @@ async def get_sql(query: str) -> str:
 
 
 @mcp.tool()
-async def get_datasouce_data(query: str) -> str:
+async def gen_conclusion(query: str) -> str:
     """
     根据用户的问题，直接返回数据结果
     不需要指定数据源ID，该函数已在内部指定了数据源ID，直接发起请求即可

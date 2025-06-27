@@ -1,5 +1,7 @@
 # asktable-mcp-server
 
+![示例图片](https://s3.bmp.ovh/imgs/2025/06/27/72d58609d7bcb9d1.png){:width="50%"}
+
 [![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 [![PyPI Version](https://img.shields.io/pypi/v/asktable-mcp-server.svg)](https://pypi.org/project/asktable-mcp-server/)
 
@@ -13,19 +15,6 @@
 # On macOS and Linux
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
-
----
-
-## 2×2 配置方式总览
-
-| 模式          | `transport`  | `base_url` 环境变量         |
-|---------------|--------------|-----------------------------|
-| Stdio + SaaS  | stdio                      | 不填                        |
-| Stdio + 本地  | stdio                      | 填写本地地址                 |
-| SSE + SaaS    | sse                       | 不填                        |
-| SSE + 本地    | sse                      | 填写本地地址                 |
-
-- **SaaS/本地** 由 `base_url` 是否填写决定
 
 ---
 
@@ -51,7 +40,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
   ```
   ```bash
   #本地版
-  uvx --from asktable-mcp-server@latest python -m asktable_mcp_server.sse_server --base_url http://your_ip:port/api
+  uvx --from asktable-mcp-server@latest python -m asktable_mcp_server.sse_server --base_url http://your_local_ip:port/api
   ```
   
 
@@ -122,3 +111,4 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ---
 
 如需进一步帮助，请查阅官方文档或联系我们。
+****
