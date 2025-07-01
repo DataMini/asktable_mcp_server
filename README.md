@@ -1,13 +1,15 @@
-# asktable-mcp-server
-
+# Asktable-MCP-Server
+![Case](https://s3.bmp.ovh/imgs/2025/07/02/a16c161e3570120b.png )
 
 [![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 [![PyPI Version](https://img.shields.io/pypi/v/asktable-mcp-server.svg)](https://pypi.org/project/asktable-mcp-server/)
 
+
+
 `asktable-mcp-server` 是为 [AskTable](https://www.asktable.com/) 提供的 MCP 服务，支持通过 Stdio 或 SSE 协议与 AskTable SaaS 或本地部署服务交互。
 
 
-![Case](https://s3.bmp.ovh/imgs/2025/06/27/b4b65f0d6e40054e.png)
+![Case](https://s3.bmp.ovh/imgs/2025/07/02/7de2a851031f6913.png)
 ## 快速开始
 
 ### 安装与配置
@@ -27,6 +29,18 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ---
 
+## 工具介绍
+ - gen_sql ， 根据用户查询生成对应的SQL语句
+   - 输入：生成可以找出销售额前10的产品的sql
+   - 输出：对应的sql语句
+ - gen_conclusion ， 根据用户的问题，直接返回数据结果
+   - 输入：用户问题，如："请给我出销售额前10的产品"
+   - 输出：对应的数据结果
+ - list_available_datasources ， 获取当前用户apikey下的可用的所有数据库（数据源）信息
+   - 输入：我数据库中有哪些数据源？
+   - 输出：对应的数据源信息，包括数据源id、数据库引擎、数据库描述
+
+---
 ## 启动命令示例
 在使用之前需先进行以下配置
 

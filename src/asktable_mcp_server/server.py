@@ -1,7 +1,9 @@
+import logging
+
 from fastmcp import FastMCP, Image,Context
 import io
 from asktable import Asktable
-from asktable_mcp_server.tools import get_asktable_data, get_asktable_sql
+from asktable_mcp_server.tools import get_asktable_data, get_asktable_sql,get_datasources_info
 from fastmcp.server.auth import BearerAuthProvider
 from fastmcp.server.auth.providers.bearer import RSAKeyPair
 import os
@@ -81,6 +83,55 @@ async def gen_conclusion(query: str) -> str:
     message = await get_asktable_data(**params)
     return message
 
+
+
+@mcp.tool()
+async def list_available_datasources() -> str:
+    """
+    获取当前用户apikey下的可用的所有数据库（数据源）信息
+
+    该函数会自动获取当前用户有权限访问的全部数据源，并返回每个数据源的关键信息，包括数据源ID、推理引擎类型和数据库描述。
+
+    :return: 如果该用户的数据库有表的话，会返回数据源信息列表，每个元素为字典，包含以下字段：
+        - datasource_id: 数据源唯一ID
+        - 数据库引擎: 数据源的推理引擎类型（如：mysql、excel、postgresql等）
+        - 数据库描述: 数据源的详细描述信息
+
+            如果该用户的数据库中没有表，则返回"[目前该用户的数据库中还没有数据]"
+    示例返回值:
+    example1 - 对应数据库中有表的情况:
+        [
+            {
+                "datasource_id": "ds_6iewvP4cpSyhO76P2Tv8MW",
+                "数据库引擎": "mysql",
+                "数据库描述": "包含大学的课程、教授、学生、部门、奖项、宿舍管理、考试成绩等信息的综合数据库。"
+            },
+            {
+                "datasource_id": "ds_43haVWseJhEizg2GHbErMu",
+                "数据库引擎": "excel",
+                "数据库描述": "包含各省份的经济指标与电信行业相关数据，帮助分析区域经济与电信发展的关系。"
+            },
+            {
+                "datasource_id": "ds_2Ds3Ude2MkYa3FAWvyVSRG",
+                "数据库引擎": "mysql",
+                "数据库描述": "该数据库用于管理基金销售相关信息，包括订单、产品和销售员等数据表。"
+            }
+        ]
+
+    example2 - 对应数据库中没有表的情况:
+        “该用户还没有创建任何数据库”
+
+    使用场景：
+        - 用户需要查看自己有哪些数据库，获取这些数据库的datasource_id、该数据库所用的数据库引擎和描述信息，以供后续需要。
+    """
+    api_key =  os.getenv('api_key')
+    base_url = os.getenv('base_url') or None
+
+    result = await get_datasources_info(api_key=api_key, base_url=base_url)
+    logging.info(result['status'])
+    return result['data']
+
+
 def main():
     # 创建参数解析器
     parser = argparse.ArgumentParser(description='Asktable MCP Server')
@@ -94,7 +145,7 @@ def main():
 
     # 根据参数启动不同协议
     if args.transport == 'stdio':
-        mcp.run(transport='sse')  # 保持原有stdio模式
+        mcp.run(transport='stdio')  # 保持原有stdio模式
     else:
         # SSE模式需要额外配置
         mcp.run(

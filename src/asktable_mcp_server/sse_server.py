@@ -2,7 +2,7 @@ from fastmcp import FastMCP
 from fastmcp.server.dependencies import get_http_request
 from starlette.requests import Request
 from starlette.middleware.base import BaseHTTPMiddleware
-from asktable_mcp_server.tools import get_asktable_data, get_asktable_sql
+from asktable_mcp_server.tools import get_asktable_data, get_asktable_sql,get_datasources_info
 import argparse
 import asyncio
 import logging
@@ -83,7 +83,6 @@ async def sse_endpoint(request: Request):
     return {"status": "configured", "apikey": API_KEY, "datasource_id": DATASOURCE_ID}
 
 
-# 你的工具函数保持不变...
 @mcp.tool()
 async def gen_sql(query: str) -> str:
     """
@@ -108,7 +107,6 @@ async def gen_sql(query: str) -> str:
     if not server_ready:
         return "Server is still initializing, please wait"
 
-    # 其余代码保持不变...
     if not API_KEY or not DATASOURCE_ID:
         try:
             request = get_http_request()
@@ -187,6 +185,72 @@ async def gen_conclusion(query: str) -> str:
 
     message = await get_asktable_data(**params)
     return message
+
+
+@mcp.tool()
+async def list_available_datasources() -> str:
+    """
+    获取当前用户apikey下的可用的所有数据库（数据源）信息
+
+    该函数会自动获取当前用户有权限访问的全部数据源，并返回每个数据源的关键信息，包括数据源ID、推理引擎类型和数据库描述。
+
+    :return: 如果该用户的数据库有表的话，会返回数据源信息列表，每个元素为字典，包含以下字段：
+        - datasource_id: 数据源唯一ID
+        - 数据库引擎: 数据源的推理引擎类型（如：mysql、excel、postgresql等）
+        - 数据库描述: 数据源的详细描述信息
+
+            如果该用户的数据库中没有表，则返回"[目前该用户的数据库中还没有数据]"
+    示例返回值:
+    example1 - 对应数据库中有表的情况:
+        [
+            {
+                "datasource_id": "ds_6iewvP4cpSyhO76P2Tv8MW",
+                "数据库引擎": "mysql",
+                "数据库描述": "包含大学的课程、教授、学生、部门、奖项、宿舍管理、考试成绩等信息的综合数据库。"
+            },
+            {
+                "datasource_id": "ds_43haVWseJhEizg2GHbErMu",
+                "数据库引擎": "excel",
+                "数据库描述": "包含各省份的经济指标与电信行业相关数据，帮助分析区域经济与电信发展的关系。"
+            },
+            {
+                "datasource_id": "ds_2Ds3Ude2MkYa3FAWvyVSRG",
+                "数据库引擎": "mysql",
+                "数据库描述": "该数据库用于管理基金销售相关信息，包括订单、产品和销售员等数据表。"
+            }
+        ]
+
+    example2 - 对应数据库中没有表的情况:
+        “该用户还没有创建任何数据库”
+
+    使用场景：
+        - 用户需要查看自己有哪些数据库，获取这些数据库的datasource_id、该数据库所用的数据库引擎和描述信息，以供后续需要。
+    """
+    global API_KEY, DATASOURCE_ID, server_ready
+
+    if not server_ready:
+        return "Server is still initializing, please wait"
+
+    if not API_KEY or not DATASOURCE_ID:
+        try:
+            request = get_http_request()
+            api_key = request.query_params.get('apikey', API_KEY)
+            datasource_id = request.query_params.get('datasource_id', DATASOURCE_ID)
+        except RuntimeError:
+            api_key = API_KEY
+            datasource_id = DATASOURCE_ID
+    else:
+        api_key = API_KEY
+        datasource_id = DATASOURCE_ID
+
+    base_url = None
+    if args.base_url:
+        base_url = args.base_url
+
+    result = await get_datasources_info(api_key=api_key, base_url=base_url)
+    logging.info(result)
+    return result['data']
+
 
 
 if __name__ == "__main__":
