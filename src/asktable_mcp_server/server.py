@@ -38,11 +38,13 @@ async def gen_sql(query: str) -> str:
         'question': query
     }
     
-    # 如果环境变量中有base_url，添加到参数中
+    # 如果环境变量中有base_url、role_id，添加到参数中
     base_url = os.getenv('base_url')
+    role_id = os.getenv('role_id')
     if base_url:
         params['base_url'] = base_url
-    
+    if role_id:
+        params['role_id'] = role_id
     message = await get_asktable_sql(**params)
     return message
 
@@ -74,11 +76,13 @@ async def gen_conclusion(query: str) -> str:
         'question': query
     }
     
-    # 如果环境变量中有base_url，添加到参数中
+    # 如果环境变量中有base_url、role_id，添加到参数中
     base_url = os.getenv('base_url')
+    role_id = os.getenv('role_id')
     if base_url:
         params['base_url'] = base_url
-
+    if role_id:
+        params['role_id'] = role_id
 
     message = await get_asktable_data(**params)
     return message
@@ -126,8 +130,9 @@ async def list_available_datasources() -> str:
     """
     api_key =  os.getenv('api_key')
     base_url = os.getenv('base_url') or None
+    role_id = os.getenv('role_id') or None
 
-    result = await get_datasources_info(api_key=api_key, base_url=base_url)
+    result = await get_datasources_info(api_key=api_key, base_url=base_url,role_id=role_id)
     logging.info(result['status'])
     return result['data']
 

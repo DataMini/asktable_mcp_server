@@ -34,8 +34,7 @@ async def lifespan(fastmcp_instance):
     # 启动逻辑
     logger.info("服务器正在初始化...")
 
-    # 在这里可以进行一些初始化工作
-    await asyncio.sleep(3)  # 模拟初始化时间
+    await asyncio.sleep(3)
 
     server_ready = True
     logger.info("服务器初始化完成，准备接受请求")
@@ -65,7 +64,7 @@ async def health_check(request: Request):
 @mcp.custom_route("/sse/", methods=["GET"])
 async def sse_endpoint(request: Request):
     """自定义SSE端点，检查服务器是否准备就绪"""
-    global API_KEY, DATASOURCE_ID, server_ready
+    global API_KEY, DATASOURCE_ID, server_ready,ROLE_ID
 
     if not server_ready:
         return {"error": "Server is still initializing, please wait"}
@@ -73,6 +72,7 @@ async def sse_endpoint(request: Request):
     # 从URL参数获取配置
     API_KEY = request.query_params.get('apikey')
     DATASOURCE_ID = request.query_params.get('datasource_id')
+    ROLE_ID = request.query_params.get('role_id')
 
     if not API_KEY or not DATASOURCE_ID:
         logging.info("error: Missing required parameters: apikey and datasource_id")
@@ -102,7 +102,7 @@ async def gen_sql(query: str) -> str:
         - 需要将自然语言转化为SQL查询
         - 仅需要SQL文本而不需要执行结果
     """
-    global API_KEY, DATASOURCE_ID, server_ready
+    global API_KEY, DATASOURCE_ID, server_ready,ROLE_ID
 
     if not server_ready:
         return "Server is still initializing, please wait"
@@ -119,13 +119,25 @@ async def gen_sql(query: str) -> str:
         api_key = API_KEY
         datasource_id = DATASOURCE_ID
 
+    try:
+        request = get_http_request()
+        role_id = request.query_params.get('role_id', None)
+    except RuntimeError:
+        role_id = None
+
+    if not role_id:
+        role_id = ROLE_ID
+
     logging.info(f"api_key:{api_key}")
     logging.info(f"datasource_id:{datasource_id}")
+    logging.info(f"role_id:{role_id}")
 
     params = {
         'api_key': api_key,
         'datasource_id': datasource_id,
-        'question': query
+        'question': query,
+        'role_id':role_id
+
     }
     if args.base_url:
         params['base_url'] = args.base_url
@@ -159,7 +171,6 @@ async def gen_conclusion(query: str) -> str:
     if not server_ready:
         return "Server is still initializing, please wait"
 
-    # 其余代码保持不变...
     if not API_KEY or not DATASOURCE_ID:
         try:
             request = get_http_request()
@@ -172,16 +183,26 @@ async def gen_conclusion(query: str) -> str:
         api_key = API_KEY
         datasource_id = DATASOURCE_ID
 
+    try:
+        request = get_http_request()
+        role_id = request.query_params.get('role_id', None)
+    except RuntimeError:
+        role_id = None
+
+    if not role_id:
+        role_id = ROLE_ID
+
     logging.info(f"api_key:{api_key}")
     logging.info(f"datasource_id:{datasource_id}")
+    logging.info(f"role_id:{role_id}")
 
     params = {
-        'api_key': str(api_key),
-        'datasource_id': str(datasource_id),
-        'question': query
+        'api_key': api_key,
+        'datasource_id': datasource_id,
+        'question': query,
+        'role_id':role_id
+
     }
-    if args.base_url:
-        params['base_url'] = args.base_url
 
     message = await get_asktable_data(**params)
     return message

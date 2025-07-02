@@ -26,6 +26,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 - `api_key`：AskTable API 密钥（必需，环境变量）
 - `datasource_id`：数据源ID（必需，环境变量）
 - `base_url`：本地IP服务地址（可选，填写则走本地部署，不填则走SaaS）
+- `role_id` ：角色id（可选，填写则只能访问该角色被允许的数据，不填则即可查询所有数据）
 
 ---
 
@@ -36,7 +37,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
  - gen_conclusion ， 根据用户的问题，直接返回数据结果
    - 输入：用户问题，如："请给我出销售额前10的产品"
    - 输出：对应的数据结果
- - list_available_datasources ， 获取当前用户apikey下的可用的所有数据库（数据源）信息
+ - list_available_datasources ， 获取当前APIKEY下的用户（role_id）所有可用数据库（数据源）信息
    - 输入：我数据库中有哪些数据源？
    - 输出：对应的数据源信息，包括数据源id、数据库引擎、数据库描述
 
@@ -76,8 +77,9 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
       "command": "uvx",
       "args": ["asktable-mcp-server@latest", "--transport", "stdio"],
       "env": {
-        "api_key": "your_api_key",
-        "datasource_id": "your_datasource_id"
+        "api_key": "your_api_key",            // 必填
+        "datasource_id": "your_datasource_id", // 必填
+        // "role_id": "your_role_id"           // 可选：如需限定角色权限，请填写
       }
     }
   }
@@ -95,9 +97,10 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
       "command": "uvx",
       "args": ["asktable-mcp-server@latest", "--transport", "stdio"],
       "env": {
-        "api_key": "your_api_key",
-        "datasource_id": "your_datasource_id",
-        "base_url": "http://your_local_ip:port/api"
+        "api_key": "your_api_key",           // 必填
+        "datasource_id": "your_datasource_id",// 必填
+        "base_url": "http://your_local_ip:port/api", // 必填
+        // "role_id": "your_role_id"           // 可选：如需限定角色权限，请填写
       }
     }
   }
@@ -112,7 +115,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 {
   "mcpServers": {    
     "asktable-mcp-server": {
-      "url": "http://localhost:8095/sse/?apikey=your_apikey&datasouce_id=your_datasouce_id",
+      // role_id 为可选参数，不指定则使用默认权限
+      "url": "http://localhost:8095/sse/?apikey=your_apikey&datasouce_id=your_datasouce_id&role_id=your_role_id",
       "headers": {},
       "timeout": 300,
       "sse_read_timeout": 300
