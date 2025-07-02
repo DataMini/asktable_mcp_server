@@ -58,6 +58,3 @@ async def get_datasources_info(api_key, base_url=None,role_id=None):
         return helper.get_datasources_info_by_role(role_id=role_id)
 
 
-
-if __name__ == "__main__":
-    pass

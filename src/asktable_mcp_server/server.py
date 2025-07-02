@@ -1,6 +1,7 @@
 import logging
 
-from fastmcp import FastMCP, Image,Context
+from fastmcp import FastMCP,Context
+
 import io
 from asktable import Asktable
 from asktable_mcp_server.tools import get_asktable_data, get_asktable_sql,get_datasources_info
@@ -77,8 +78,8 @@ async def gen_conclusion(query: str) -> str:
     }
     
     # 如果环境变量中有base_url、role_id，添加到参数中
-    base_url = os.getenv('base_url')
-    role_id = os.getenv('role_id')
+    base_url = os.getenv('base_url') or None
+    role_id = os.getenv('role_id') or None
     if base_url:
         params['base_url'] = base_url
     if role_id:
@@ -144,7 +145,7 @@ def main():
                         choices=['stdio', 'sse'], 
                         default='stdio',
                         help='选择通信协议: stdio或sse')
-    parser.add_argument('--port', type=int, default=8000,
+    parser.add_argument('--port', type=int, default=8095,
                         help='SSE模式使用的端口号')
     args = parser.parse_args()
 

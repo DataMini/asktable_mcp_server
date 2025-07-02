@@ -75,7 +75,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
   "mcpServers": {
     "asktable-mcp-server": {
       "command": "uvx",
-      "args": ["asktable-mcp-server@latest", "--transport", "stdio"],
+      "args": ["asktable-mcp-server@latest"],
       "env": {
         "api_key": "your_api_key",            // 必填
         "datasource_id": "your_datasource_id", // 必填
@@ -95,7 +95,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
   "mcpServers": {
     "asktable-mcp-server": {
       "command": "uvx",
-      "args": ["asktable-mcp-server@latest", "--transport", "stdio"],
+      "args": ["asktable-mcp-server@latest"],
       "env": {
         "api_key": "your_api_key",           // 必填
         "datasource_id": "your_datasource_id",// 必填
