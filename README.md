@@ -10,12 +10,59 @@
 
 ## 快速开始
 
-### 安装与配置
-本地先安装uv配置工具。
-```bash
-# On macOS and Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
+### 新用户（推荐 SaaS）
+
+如果您是 AskTable 的新用户，推荐直接使用 SaaS 服务，配置最简单：
+
+1. **获取 API 密钥和数据源 ID**
+   - 登录 [AskTable](https://www.asktable.com/)
+   - 在设置中获取您的 API 密钥
+   - 选择要连接的数据源，获取数据源 ID
+
+2. **配置 MCP 客户端（推荐 SSE 方式）**
+   ```json
+   {
+     "mcpServers": {
+       "asktable": {
+         "url": "https://mcp.asktable.com/sse/?apikey=your_api_key&datasource_id=your_datasource_id",
+         "headers": {},
+         "timeout": 300,
+         "sse_read_timeout": 300
+       }
+     }
+   }
+   ```
+
+3. **开始使用**
+   - 重启您的 MCP 客户端
+   - 现在可以使用 AskTable 的所有功能了！
+
+### 本地部署用户
+
+如果您使用 AskTable 本地部署版本，推荐使用 SSE 方式（已包含在 allinone 镜像中）：
+
+1. **获取 API 密钥和数据源 ID**
+   - 登录您的本地 AskTable 部署
+   - 在设置中获取您的 API 密钥
+   - 选择要连接的数据源，获取数据源 ID
+
+2. **配置 MCP 客户端（推荐 SSE 方式）**
+   ```json
+   {
+     "mcpServers": {
+       "asktable": {
+         "url": "http://your-domain/mcp/sse/?apikey=your_api_key&datasource_id=your_datasource_id",
+         "headers": {},
+         "timeout": 300,
+         "sse_read_timeout": 300
+       }
+     }
+   }
+   ```
+
+3. **开始使用**
+   - 重启您的 MCP 客户端
+   - 现在可以使用 AskTable 的所有功能了！
 
 ---
 
@@ -56,22 +103,94 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ## 用户配置指南
 
-### 方式一：Stdio 模式（推荐个人用户）
+### 方式一：SaaS SSE 模式（推荐新用户）
 
-Stdio 模式适合个人用户使用，通过标准输入输出与MCP客户端通信。
+如果您使用的是 AskTable SaaS 服务，推荐使用 SSE 方式，无需安装任何软件。
+
+#### 配置 MCP 客户端
+
+```json
+{
+  "mcpServers": {
+    "asktable": {
+      "url": "https://mcp.asktable.com/sse/?apikey=your_api_key&datasource_id=your_datasource_id",
+      "headers": {},
+      "timeout": 300,
+      "sse_read_timeout": 300
+    }
+  }
+}
+```
+
+**参数说明**：
+- `apikey`：AskTable API 密钥（必需）
+- `datasource_id`：数据源ID（必需）
+
+### 方式二：SaaS Stdio 模式（需要安装包）
+
+如果您使用 SaaS 服务但希望使用 Stdio 模式，需要本地安装包。
 
 #### 1. 安装包
 ```bash
 # 使用 uv 安装
 uvx asktable-mcp-server@latest
-
-# 或使用 pip 安装
-pip install asktable-mcp-server
 ```
 
 #### 2. 配置 MCP 客户端
 
-所有 MCP 客户端都可以使用相同的配置格式：
+```json
+{
+  "mcpServers": {
+    "asktable": {
+      "command": "uvx",
+      "args": ["asktable-mcp-server@latest"],
+      "env": {
+        "API_KEY": "your_api_key",
+        "DATASOURCE_ID": "your_datasource_id"
+      }
+    }
+  }
+}
+```
+
+**环境变量说明**：
+- `API_KEY`：AskTable API 密钥（必需）
+- `DATASOURCE_ID`：数据源ID（必需）
+
+### 方式三：本地部署 SSE 模式
+
+如果您使用 AskTable 本地部署版本，推荐使用 SSE 方式，在 AskTable 的 All-in-One 镜像中已经包含了 MCP SSE Server，默认地址是`http://your_local_host:port/mcp/sse`。
+
+#### 配置 MCP 客户端
+
+```json
+{
+  "mcpServers": {
+    "asktable": {
+      "url": "http://your_local_host:port/mcp/sse/?apikey=your_api_key&datasource_id=your_datasource_id",
+      "headers": {},
+      "timeout": 300,
+      "sse_read_timeout": 300
+    }
+  }
+}
+```
+
+**参数说明**：
+- `apikey`：AskTable API 密钥（必需）
+- `datasource_id`：数据源ID（必需）
+
+### 方式四：本地部署 Stdio 模式（需要安装包）
+
+如果您使用本地部署但希望使用 Stdio 模式，需要本地安装包并配置 base_url。
+
+#### 1. 安装包
+```bash
+# 使用 uv 安装
+uvx asktable-mcp-server@latest
+```
+
+#### 2. 配置 MCP 客户端
 
 ```json
 {
@@ -82,7 +201,7 @@ pip install asktable-mcp-server
       "env": {
         "API_KEY": "your_api_key",
         "DATASOURCE_ID": "your_datasource_id",
-        "BASE_URL": "http://your_local_ip:port/api"
+        "BASE_URL": "http://your_local_host:port/api"
       }
     }
   }
@@ -92,45 +211,14 @@ pip install asktable-mcp-server
 **环境变量说明**：
 - `API_KEY`：AskTable API 密钥（必需）
 - `DATASOURCE_ID`：数据源ID（必需）
-- `BASE_URL`：本地部署服务地址（可选，不填则使用SaaS）
+- `BASE_URL`：本地部署服务地址（必需）
 
 
-
-### 方式二：SSE 模式（推荐团队用户）
-
-SSE 模式适合团队使用，可以部署为独立的HTTP服务，支持多用户访问。
-
-#### 1. 直接运行
-```bash
-# 安装包
-pip install asktable-mcp-server
-
-# 启动 SSE 服务器
-python -m asktable_mcp_server.server --transport sse --port 8095
-```
-
-#### 2. 配置 MCP 客户端
-
-```json
-{
-  "mcpServers": {
-    "asktable-mcp-server": {
-      "url": "http://your_server_ip:8095/sse/?apikey=your_api_key&datasource_id=your_datasource_id",
-      "headers": {},
-      "timeout": 300,
-      "sse_read_timeout": 300
-    }
-  }
-}
-```
-
-**URL 参数说明**：
-- `apikey`：AskTable API 密钥（必需）
-- `datasource_id`：数据源ID（必需）
 
 ---
 
-## 系统管理员部署指南
+## 自建 SSE 服务（高级用户）
+
 
 ### Docker 部署（推荐）
 
@@ -148,7 +236,6 @@ docker run -d \
   -e BASE_URL=http://your_local_ip:port/api \
   registry.cn-shanghai.aliyuncs.com/datamini/asktable-mcp-server:latest
 ```
-
 
 ---
 
