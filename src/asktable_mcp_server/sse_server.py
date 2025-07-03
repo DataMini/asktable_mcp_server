@@ -28,6 +28,12 @@ def parse_args():
         default=None,
         help="请求所用的服务器主机地址，填写了则使用指定服务器地址，否则使用默认的AskTable服务地址",
     )
+    parser.add_argument(
+        "--path_prefix",
+        type=str,
+        default="",
+        help="路径前缀，用于在反向代理环境中设置正确的路径（如：/mcp）",
+    )
 
     args = parser.parse_args()
     return args
