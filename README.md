@@ -76,7 +76,7 @@ pip install asktable-mcp-server
 ```json
 {
   "mcpServers": {
-    "asktable-mcp-server": {
+    "asktable": {
       "command": "uvx",
       "args": ["asktable-mcp-server@latest"],
       "env": {
