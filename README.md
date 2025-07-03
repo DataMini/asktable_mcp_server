@@ -24,7 +24,6 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 - `api_key`：AskTable API 密钥（必需，环境变量）
 - `datasource_id`：数据源ID（必需，环境变量）
 - `base_url`：本地IP服务地址（可选，填写则走本地部署，不填则走SaaS）
-- `role_id`：角色ID（可选，用于权限控制）
 
 ---
 
