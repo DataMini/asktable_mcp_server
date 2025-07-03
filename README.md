@@ -8,71 +8,6 @@
 
 ![Case](https://s3.bmp.ovh/imgs/2025/07/02/7de2a851031f6913.png)
 
-## 快速开始
-
-### 新用户（推荐 SaaS）
-
-如果您是 AskTable 的新用户，推荐直接使用 SaaS 服务，配置最简单：
-
-1. **获取 API 密钥和数据源 ID**
-   - 登录 [AskTable](https://www.asktable.com/)
-   - 在设置中获取您的 API 密钥
-   - 选择要连接的数据源，获取数据源 ID
-
-2. **配置 MCP 客户端（推荐 SSE 方式）**
-   ```json
-   {
-     "mcpServers": {
-       "asktable": {
-         "type": "sse",
-         "url": "https://mcp.asktable.com/sse/?apikey=ASKER_8H8DRJCH6LT8HCJPXOH4&datasource_id=ds_6iewvP4cpSyhO76P2Tv8MW",
-         "headers": {},
-         "timeout": 300,
-         "sse_read_timeout": 300
-       }
-     }
-   }
-   ```
-   > 注意: 上述 URL 中的 apikey 和 datasoruce_id 是在 AskTable.com官网的演示项目和数据，可以直接拿来测试。比如问，总共多少学生？
-
-3. **开始使用**
-   - 重启您的 MCP 客户端
-   - 现在可以使用 AskTable 的所有功能了！
-
-### 本地部署用户
-
-如果您使用 AskTable 本地部署版本，推荐使用 SSE 方式（已包含在 allinone 镜像中）：
-
-1. **获取 API 密钥和数据源 ID**
-   - 登录您的本地 AskTable 部署
-   - 在设置中获取您的 API 密钥
-   - 选择要连接的数据源，获取数据源 ID
-
-2. **配置 MCP 客户端（推荐 SSE 方式）**
-   ```json
-   {
-     "mcpServers": {
-       "asktable": {
-         "url": "http://your-domain/mcp/sse/?apikey=your_api_key&datasource_id=your_datasource_id",
-         "headers": {},
-         "timeout": 300,
-         "sse_read_timeout": 300
-       }
-     }
-   }
-   ```
-
-3. **开始使用**
-   - 重启您的 MCP 客户端
-   - 现在可以使用 AskTable 的所有功能了！
-
----
-
-## 参数说明
-
-- `api_key`：AskTable API 密钥（必需，环境变量）
-- `datasource_id`：数据源ID（必需，环境变量）
-- `base_url`：本地IP服务地址（可选，填写则走本地部署，不填则走SaaS）
 
 ---
 
@@ -109,24 +44,31 @@
 
 如果您使用的是 AskTable SaaS 服务，推荐使用 SSE 方式，无需安装任何软件。
 
-#### 配置 MCP 客户端
 
-```json
-{
-  "mcpServers": {
-    "asktable": {
-      "url": "https://mcp.asktable.com/sse/?apikey=your_api_key&datasource_id=your_datasource_id",
-      "headers": {},
-      "timeout": 300,
-      "sse_read_timeout": 300
-    }
-  }
-}
-```
+1. **获取 API 密钥和数据源 ID**
+   - 登录 [AskTable](https://www.asktable.com/)
+   - 在设置中获取您的 API 密钥(apikey)
+   - 选择要连接的数据源，获取数据源 ID(datasource_id)
 
-**参数说明**：
-- `apikey`：AskTable API 密钥（必需）
-- `datasource_id`：数据源ID（必需）
+2. **配置 MCP 客户端（推荐 SSE 方式）**
+   ```json
+   {
+     "mcpServers": {
+       "asktable": {
+         "type": "sse",
+         "url": "https://mcp.asktable.com/sse/?apikey=ASKER_8H8DRJCH6LT8HCJPXOH4&datasource_id=ds_6iewvP4cpSyhO76P2Tv8MW",
+         "headers": {},
+         "timeout": 300,
+         "sse_read_timeout": 300
+       }
+     }
+   }
+   ```
+   > 注意: 上述 URL 中的 apikey 和 datasoruce_id 是在 AskTable.com 官网的演示项目和数据，可以直接拿来测试。比如问，总共多少学生？
+
+3. **开始使用**
+   - 重启您的 MCP 客户端
+   - 现在可以使用 AskTable 的所有功能了！
 
 ### 方式二：SaaS Stdio 模式（需要安装包）
 
@@ -147,8 +89,8 @@ uvx asktable-mcp-server@latest
       "command": "uvx",
       "args": ["asktable-mcp-server@latest"],
       "env": {
-        "API_KEY": "your_api_key",
-        "DATASOURCE_ID": "your_datasource_id"
+        "API_KEY": "ASKER_8H8DRJCH6LT8HCJPXOH4",
+        "DATASOURCE_ID": "ds_6iewvP4cpSyhO76P2Tv8MW"
       }
     }
   }
@@ -169,6 +111,7 @@ uvx asktable-mcp-server@latest
 {
   "mcpServers": {
     "asktable": {
+      "type": "sse",
       "url": "http://your_local_host:port/mcp/sse/?apikey=your_api_key&datasource_id=your_datasource_id",
       "headers": {},
       "timeout": 300,
