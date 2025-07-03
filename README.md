@@ -82,7 +82,7 @@ pip install asktable-mcp-server
       "env": {
         "API_KEY": "your_api_key",
         "DATASOURCE_ID": "your_datasource_id",
-        "BASE_URL": "http://your_local_ip:port/api",
+        "BASE_URL": "http://your_local_ip:port/api"
       }
     }
   }
