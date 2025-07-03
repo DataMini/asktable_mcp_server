@@ -33,20 +33,15 @@ async def gen_sql(query: str) -> str:
         - 需要将自然语言转化为SQL查询
         - 仅需要SQL文本而不需要执行结果
     """
-    # 构建参数字典
+    # 构建基本参数
     params = {
-        "api_key": os.getenv("api_key"),
-        "datasource_id": os.getenv("datasource_id"),
+        "api_key": os.getenv("API_KEY"),
+        "datasource_id": os.getenv("DATASOURCE_ID"), 
         "question": query,
+        "base_url": os.getenv("BASE_URL") or None,
     }
-
-    # 如果环境变量中有base_url、role_id，添加到参数中
-    base_url = os.getenv("base_url")
-    role_id = os.getenv("role_id")
-    if base_url:
-        params["base_url"] = base_url
-    if role_id:
-        params["role_id"] = role_id
+    
+    # 调用API获取SQL
     message = await get_asktable_sql(**params)
     return message
 
@@ -71,21 +66,15 @@ async def gen_conclusion(query: str) -> str:
         - 需要查看实际数据结果
         - 不关心SQL细节，只要最终答案与结论
     """
-    # 构建参数字典
+    # 构建基本参数
     params = {
-        "api_key": os.getenv("api_key"),
-        "datasource_id": os.getenv("datasource_id"),
+        "api_key": os.getenv("API_KEY"),
+        "datasource_id": os.getenv("DATASOURCE_ID"),
         "question": query,
+        "base_url": os.getenv("BASE_URL") or None,
     }
 
-    # 如果环境变量中有base_url、role_id，添加到参数中
-    base_url = os.getenv("base_url") or None
-    role_id = os.getenv("role_id") or None
-    if base_url:
-        params["base_url"] = base_url
-    if role_id:
-        params["role_id"] = role_id
-
+    # 调用API获取数据
     message = await get_asktable_data(**params)
     return message
 
@@ -129,12 +118,11 @@ async def list_available_datasources() -> str:
     使用场景：
         - 用户需要查看自己有哪些数据库，获取这些数据库的datasource_id、该数据库所用的数据库引擎和描述信息，以供后续需要。
     """
-    api_key = os.getenv("api_key")
-    base_url = os.getenv("base_url") or None
-    role_id = os.getenv("role_id") or None
+    api_key = os.getenv("API_KEY")
+    base_url = os.getenv("BASE_URL") or None
 
     result = await get_datasources_info(
-        api_key=api_key, base_url=base_url, role_id=role_id
+        api_key=api_key, base_url=base_url
     )
     logging.info(result["status"])
     return result["data"]
