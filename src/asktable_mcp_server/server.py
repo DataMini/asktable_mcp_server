@@ -47,7 +47,7 @@ async def gen_sql(query: str) -> str:
 
 
 @mcp.tool()
-async def gen_conclusion(query: str) -> str:
+async def query(query: str) -> str:
     """
     根据用户的问题，直接返回数据结果
     不需要指定数据源ID，该函数已在内部指定了数据源ID，直接发起请求即可
@@ -80,7 +80,7 @@ async def gen_conclusion(query: str) -> str:
 
 
 @mcp.tool()
-async def list_available_datasources() -> str:
+async def list_data() -> str:
     """
     获取当前用户apikey下的可用的所有数据库（数据源）信息
 

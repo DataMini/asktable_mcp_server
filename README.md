@@ -24,7 +24,8 @@
    {
      "mcpServers": {
        "asktable": {
-         "url": "https://mcp.asktable.com/sse/?apikey=your_api_key&datasource_id=your_datasource_id",
+         "type": "sse",
+         "url": "https://mcp.asktable.com/sse/?apikey=ASKER_8H8DRJCH6LT8HCJPXOH4&datasource_id=ds_6iewvP4cpSyhO76P2Tv8MW",
          "headers": {},
          "timeout": 300,
          "sse_read_timeout": 300
@@ -32,6 +33,7 @@
      }
    }
    ```
+   > 注意: 上述 URL 中的 apikey 和 datasoruce_id 是在 AskTable.com官网的演示项目和数据，可以直接拿来测试。比如问，总共多少学生？
 
 3. **开始使用**
    - 重启您的 MCP 客户端
@@ -78,12 +80,12 @@
 
 ### 可用工具
 
-1. **list_available_datasources** - 获取当前APIKEY下的所有可用数据库（数据源）信息
+1. **list_data** - 获取当前APIKEY下的所有可用数据库（数据源）信息
    - **输入示例**：我数据库中有哪些数据源？
    - **输出**：数据源信息列表，包含数据源ID、数据库引擎、数据库描述
    - **使用场景**：查看用户权限下的所有数据源，获取数据源ID用于后续查询
 
-2. **gen_conclusion** - 根据用户的问题，直接返回数据结果
+2. **query** - 根据用户的问题，直接返回数据结果
    - **输入示例**：
      - "请给我出销售额前10的产品"
      - "昨天的订单总金额是多少"
