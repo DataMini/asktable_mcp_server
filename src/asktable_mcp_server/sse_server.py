@@ -14,13 +14,20 @@ from asktable_mcp_server.tools import (
 )
 
 # 配置日志
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='AskTable MCP Server')
-    parser.add_argument('--base_url', type=str, default=None, help='请求所用的服务器主机地址，填写了则使用指定服务器地址，否则使用默认的AskTable服务地址')
+    parser = argparse.ArgumentParser(description="AskTable MCP Server")
+    parser.add_argument(
+        "--base_url",
+        type=str,
+        default=None,
+        help="请求所用的服务器主机地址，填写了则使用指定服务器地址，否则使用默认的AskTable服务地址",
+    )
 
     args = parser.parse_args()
     return args
@@ -52,10 +59,7 @@ async def lifespan(fastmcp_instance):
 
 
 # 创建服务器时传入 lifespan
-mcp = FastMCP(
-    name="AskTable SSE MCP Server",
-    lifespan=lifespan
-)
+mcp = FastMCP(name="AskTable SSE MCP Server", lifespan=lifespan)
 
 
 @mcp.custom_route("/health", methods=["GET"])
@@ -69,15 +73,15 @@ async def health_check(request: Request):
 @mcp.custom_route("/sse/", methods=["GET"])
 async def sse_endpoint(request: Request):
     """自定义SSE端点，检查服务器是否准备就绪"""
-    global API_KEY, DATASOURCE_ID, server_ready,ROLE_ID
+    global API_KEY, DATASOURCE_ID, server_ready, ROLE_ID
 
     if not server_ready:
         return {"error": "Server is still initializing, please wait"}
 
     # 从URL参数获取配置
-    API_KEY = request.query_params.get('apikey')
-    DATASOURCE_ID = request.query_params.get('datasource_id')
-    ROLE_ID = request.query_params.get('role_id')
+    API_KEY = request.query_params.get("apikey")
+    DATASOURCE_ID = request.query_params.get("datasource_id")
+    ROLE_ID = request.query_params.get("role_id")
 
     if not API_KEY or not DATASOURCE_ID:
         logging.info("error: Missing required parameters: apikey and datasource_id")
@@ -107,7 +111,7 @@ async def gen_sql(query: str) -> str:
         - 需要将自然语言转化为SQL查询
         - 仅需要SQL文本而不需要执行结果
     """
-    global API_KEY, DATASOURCE_ID, server_ready,ROLE_ID
+    global API_KEY, DATASOURCE_ID, server_ready, ROLE_ID
 
     if not server_ready:
         return "Server is still initializing, please wait"
@@ -115,8 +119,8 @@ async def gen_sql(query: str) -> str:
     if not API_KEY or not DATASOURCE_ID:
         try:
             request = get_http_request()
-            api_key = request.query_params.get('apikey', API_KEY)
-            datasource_id = request.query_params.get('datasource_id', DATASOURCE_ID)
+            api_key = request.query_params.get("apikey", API_KEY)
+            datasource_id = request.query_params.get("datasource_id", DATASOURCE_ID)
         except RuntimeError:
             api_key = API_KEY
             datasource_id = DATASOURCE_ID
@@ -126,7 +130,7 @@ async def gen_sql(query: str) -> str:
 
     try:
         request = get_http_request()
-        role_id = request.query_params.get('role_id', None)
+        role_id = request.query_params.get("role_id", None)
     except RuntimeError:
         role_id = None
 
@@ -138,14 +142,13 @@ async def gen_sql(query: str) -> str:
     logging.info(f"role_id:{role_id}")
 
     params = {
-        'api_key': api_key,
-        'datasource_id': datasource_id,
-        'question': query,
-        'role_id':role_id
-
+        "api_key": api_key,
+        "datasource_id": datasource_id,
+        "question": query,
+        "role_id": role_id,
     }
     if args.base_url:
-        params['base_url'] = args.base_url
+        params["base_url"] = args.base_url
 
     message = await get_asktable_sql(**params)
     return message
@@ -179,8 +182,8 @@ async def gen_conclusion(query: str) -> str:
     if not API_KEY or not DATASOURCE_ID:
         try:
             request = get_http_request()
-            api_key = request.query_params.get('apikey', API_KEY)
-            datasource_id = request.query_params.get('datasource_id', DATASOURCE_ID)
+            api_key = request.query_params.get("apikey", API_KEY)
+            datasource_id = request.query_params.get("datasource_id", DATASOURCE_ID)
         except RuntimeError:
             api_key = API_KEY
             datasource_id = DATASOURCE_ID
@@ -190,7 +193,7 @@ async def gen_conclusion(query: str) -> str:
 
     try:
         request = get_http_request()
-        role_id = request.query_params.get('role_id', None)
+        role_id = request.query_params.get("role_id", None)
     except RuntimeError:
         role_id = None
 
@@ -202,11 +205,10 @@ async def gen_conclusion(query: str) -> str:
     logging.info(f"role_id:{role_id}")
 
     params = {
-        'api_key': api_key,
-        'datasource_id': datasource_id,
-        'question': query,
-        'role_id':role_id
-
+        "api_key": api_key,
+        "datasource_id": datasource_id,
+        "question": query,
+        "role_id": role_id,
     }
 
     message = await get_asktable_data(**params)
@@ -260,8 +262,8 @@ async def list_available_datasources() -> str:
     if not API_KEY or not DATASOURCE_ID:
         try:
             request = get_http_request()
-            api_key = request.query_params.get('apikey', API_KEY)
-            datasource_id = request.query_params.get('datasource_id', DATASOURCE_ID)
+            api_key = request.query_params.get("apikey", API_KEY)
+            datasource_id = request.query_params.get("datasource_id", DATASOURCE_ID)
         except RuntimeError:
             api_key = API_KEY
             datasource_id = DATASOURCE_ID
@@ -275,8 +277,7 @@ async def list_available_datasources() -> str:
 
     result = await get_datasources_info(api_key=api_key, base_url=base_url)
     logging.info(result)
-    return result['data']
-
+    return result["data"]
 
 
 if __name__ == "__main__":

@@ -9,8 +9,10 @@ from asktable_mcp_server.tools import (
     get_asktable_sql,
     get_datasources_info,
 )
+from asktable_mcp_server.sse_server import mcp as sse_mcp
 
 mcp = FastMCP(name="Asktable stdio mcp server running...")
+
 
 @mcp.tool()
 async def gen_sql(query: str) -> str:
@@ -18,14 +20,14 @@ async def gen_sql(query: str) -> str:
     根据用户查询生成对应的SQL语句
     不需要指定数据源ID，该函数已在内部指定了数据源ID，直接发起请求即可
     该函数将用户的查询转换为SQL语句，仅返回SQL文本，不执行查询。
-    
+
     :param query: 用户的查询内容
                   示例：
                   - "我需要查询昨天的订单总金额的sql"
                   - "我要找出销售额前10的产品的sql"
                   - "统计每个部门的员工数量的sql"
     :return: 生成的SQL语句字符串
-    
+
     使用场景：
         - 需要查看生成的SQL语句
         - 需要将自然语言转化为SQL查询
@@ -33,18 +35,18 @@ async def gen_sql(query: str) -> str:
     """
     # 构建参数字典
     params = {
-        'api_key': os.getenv('api_key'),
-        'datasource_id': os.getenv('datasource_id'),
-        'question': query
+        "api_key": os.getenv("api_key"),
+        "datasource_id": os.getenv("datasource_id"),
+        "question": query,
     }
-    
+
     # 如果环境变量中有base_url、role_id，添加到参数中
-    base_url = os.getenv('base_url')
-    role_id = os.getenv('role_id')
+    base_url = os.getenv("base_url")
+    role_id = os.getenv("role_id")
     if base_url:
-        params['base_url'] = base_url
+        params["base_url"] = base_url
     if role_id:
-        params['role_id'] = role_id
+        params["role_id"] = role_id
     message = await get_asktable_sql(**params)
     return message
 
@@ -55,14 +57,14 @@ async def gen_conclusion(query: str) -> str:
     根据用户的问题，直接返回数据结果
     不需要指定数据源ID，该函数已在内部指定了数据源ID，直接发起请求即可
     该函数执行用户的查询并返回实际的数据结果或答案，而不是SQL语句。
-    
+
     :param query: 用户的查询内容
                   示例：
                   - "昨天的订单总金额是多少"
                   - "列出销售额前10的产品"
                   - "每个部门有多少员工"
     :return: 查询的实际结果
-    
+
     使用场景：
         - 需要直接获取查询答案
         - 搜索数据库数据
@@ -71,22 +73,21 @@ async def gen_conclusion(query: str) -> str:
     """
     # 构建参数字典
     params = {
-        'api_key': os.getenv('api_key'),
-        'datasource_id': os.getenv('datasource_id'),
-        'question': query
+        "api_key": os.getenv("api_key"),
+        "datasource_id": os.getenv("datasource_id"),
+        "question": query,
     }
-    
+
     # 如果环境变量中有base_url、role_id，添加到参数中
-    base_url = os.getenv('base_url') or None
-    role_id = os.getenv('role_id') or None
+    base_url = os.getenv("base_url") or None
+    role_id = os.getenv("role_id") or None
     if base_url:
-        params['base_url'] = base_url
+        params["base_url"] = base_url
     if role_id:
-        params['role_id'] = role_id
+        params["role_id"] = role_id
 
     message = await get_asktable_data(**params)
     return message
-
 
 
 @mcp.tool()
@@ -128,38 +129,42 @@ async def list_available_datasources() -> str:
     使用场景：
         - 用户需要查看自己有哪些数据库，获取这些数据库的datasource_id、该数据库所用的数据库引擎和描述信息，以供后续需要。
     """
-    api_key =  os.getenv('api_key')
-    base_url = os.getenv('base_url') or None
-    role_id = os.getenv('role_id') or None
+    api_key = os.getenv("api_key")
+    base_url = os.getenv("base_url") or None
+    role_id = os.getenv("role_id") or None
 
-    result = await get_datasources_info(api_key=api_key, base_url=base_url,role_id=role_id)
-    logging.info(result['status'])
-    return result['data']
+    result = await get_datasources_info(
+        api_key=api_key, base_url=base_url, role_id=role_id
+    )
+    logging.info(result["status"])
+    return result["data"]
 
 
 def main():
     # 创建参数解析器
-    parser = argparse.ArgumentParser(description='Asktable MCP Server')
-    parser.add_argument('--transport', 
-                        choices=['stdio', 'sse'], 
-                        default='stdio',
-                        help='选择通信协议: stdio或sse')
-    parser.add_argument('--port', type=int, default=8095,
-                        help='SSE模式使用的端口号')
+    parser = argparse.ArgumentParser(description="Asktable MCP Server")
+    parser.add_argument(
+        "--transport",
+        choices=["stdio", "sse"],
+        default="stdio",
+        help="选择通信协议: stdio或sse",
+    )
+    parser.add_argument("--port", type=int, default=8095, help="SSE模式使用的端口号")
     args = parser.parse_args()
 
     # 根据参数启动不同协议
-    if args.transport == 'stdio':
-        mcp.run(transport='stdio')  # 保持原有stdio模式
+    if args.transport == "stdio":
+        mcp.run(transport="stdio")  # 保持原有stdio模式
     else:
         # SSE模式需要额外配置
-        mcp.run(
+        sse_mcp.run(
             transport="sse",
+            host="0.0.0.0",
             port=args.port,
-            sse_path="/asktable-sse",  # 自定义SSE路径
-            log_level="info"
+            path="/sse/",  # 自定义SSE路径
+            log_level="info",
         )
+
 
 if __name__ == "__main__":
     main()
-
