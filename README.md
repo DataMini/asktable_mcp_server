@@ -72,12 +72,7 @@ pip install asktable-mcp-server
 
 #### 2. 配置 MCP 客户端
 
-根据您使用的MCP客户端，选择对应的配置方式：
-
-<details>
-<summary>Claude Desktop</summary>
-
-在 Claude Desktop 的配置文件中添加：
+所有 MCP 客户端都可以使用相同的配置格式：
 
 ```json
 {
@@ -88,57 +83,19 @@ pip install asktable-mcp-server
       "env": {
         "API_KEY": "your_api_key",
         "DATASOURCE_ID": "your_datasource_id",
-        "BASE_URL": "http://your_local_ip:port/api"
+        "BASE_URL": "http://your_local_ip:port/api",
       }
     }
   }
 }
 ```
 
-</details>
+**环境变量说明**：
+- `API_KEY`：AskTable API 密钥（必需）
+- `DATASOURCE_ID`：数据源ID（必需）
+- `BASE_URL`：本地部署服务地址（可选，不填则使用SaaS）
 
-<details>
-<summary>Cursor</summary>
 
-在 Cursor 的配置文件中添加：
-
-```json
-{
-  "mcpServers": {
-    "asktable-mcp-server": {
-      "command": "asktable-mcp-server",
-      "env": {
-        "API_KEY": "your_api_key",
-        "DATASOURCE_ID": "your_datasource_id",
-        "BASE_URL": "http://your_local_ip:port/api"
-      }
-    }
-  }
-}
-```
-
-</details>
-
-<details>
-<summary>其他 MCP 客户端</summary>
-
-```json
-{
-  "mcpServers": {
-    "asktable-mcp-server": {
-      "command": "python",
-      "args": ["-m", "asktable_mcp_server.server"],
-      "env": {
-        "API_KEY": "your_api_key",
-        "DATASOURCE_ID": "your_datasource_id",
-        "BASE_URL": "http://your_local_ip:port/api"
-      }
-    }
-  }
-}
-```
-
-</details>
 
 ### 方式二：SSE 模式（推荐团队用户）
 
@@ -167,6 +124,10 @@ python -m asktable_mcp_server.server --transport sse --port 8095
   }
 }
 ```
+
+**URL 参数说明**：
+- `apikey`：AskTable API 密钥（必需）
+- `datasource_id`：数据源ID（必需）
 
 ---
 
