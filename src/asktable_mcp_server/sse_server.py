@@ -1,12 +1,17 @@
-from fastmcp import FastMCP
-from fastmcp.server.dependencies import get_http_request
-from starlette.requests import Request
-from starlette.middleware.base import BaseHTTPMiddleware
-from asktable_mcp_server.tools import get_asktable_data, get_asktable_sql,get_datasources_info
 import argparse
 import asyncio
 import logging
 from contextlib import asynccontextmanager
+
+from fastmcp import FastMCP
+from fastmcp.server.dependencies import get_http_request
+from starlette.requests import Request
+
+from asktable_mcp_server.tools import (
+    get_asktable_data,
+    get_asktable_sql,
+    get_datasources_info,
+)
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

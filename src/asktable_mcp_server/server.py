@@ -1,15 +1,14 @@
-import logging
-
-from fastmcp import FastMCP,Context
-
-import io
-from asktable import Asktable
-from asktable_mcp_server.tools import get_asktable_data, get_asktable_sql,get_datasources_info
-from fastmcp.server.auth import BearerAuthProvider
-from fastmcp.server.auth.providers.bearer import RSAKeyPair
-import os
 import argparse
-import asyncio
+import logging
+import os
+
+from fastmcp import FastMCP
+
+from asktable_mcp_server.tools import (
+    get_asktable_data,
+    get_asktable_sql,
+    get_datasources_info,
+)
 
 mcp = FastMCP(name="Asktable stdio mcp server running...")
 
