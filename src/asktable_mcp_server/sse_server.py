@@ -14,6 +14,7 @@ from asktable_mcp_server.tools import (
     get_asktable_sql,
     get_datasources_info,
 )
+from asktable_mcp_server import __version__
 
 # 配置日志
 logging.basicConfig(
@@ -106,6 +107,7 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
         </head>
         <body>
             <h1>欢迎访问 AskTable MCP 服务（SSE）!</h1>
+            <p>当前版本: v{__version__}</p>
 
             <h2>配置示例</h2>
             <p>在您的 Agent 配置文件中，添加以下配置:</p>
