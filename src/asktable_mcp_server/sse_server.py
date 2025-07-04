@@ -50,15 +50,11 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
     """创建 MCP 服务器实例"""
     global mcp
 
-    fastmcp.settings.sse_path = path_prefix + "/sse/"
-    fastmcp.settings.message_path = path_prefix + "/messages/"
     
     # 创建服务器时传入 lifespan
     mcp = FastMCP(
         name="AskTable SSE MCP Server",
         lifespan=lifespan,
-        sse_path=path_prefix + "/sse/",
-        message_path=path_prefix + "/",
     )
 
     @mcp.custom_route(path_prefix + "/health", methods=["GET"])
@@ -220,12 +216,15 @@ def main(base_url: str = None, path_prefix: str = "", port: int = 8095):
     logger.info(f"base_url: {base_url}")
     logger.info(f"path_prefix: {path_prefix}")
     logger.info(f"port: {port}")
-    logger.info(f"global sse_path: {fastmcp.settings.sse_path}")
-    logger.info(f"global message_path: {fastmcp.settings.message_path}")
-    logger.info(f"global streamable_http_path: {fastmcp.settings.streamable_http_path}")
-    
+
     # 启动服务器
-    mcp.run(transport="sse", host="0.0.0.0", port=port, path=fastmcp.settings.sse_path)
+    mcp.run(
+        transport="sse",
+        host="0.0.0.0",
+        port=port,
+        sse_path=path_prefix + "/sse/",
+        message_path=path_prefix + "/messages/",
+    )
 
 
 if __name__ == "__main__":
