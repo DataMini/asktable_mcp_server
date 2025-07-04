@@ -12,4 +12,4 @@ RUN rm -f /etc/apt/sources.list.d/debian-security.list && \
 EXPOSE 8095
 
 # 设置容器启动时执行的命令
-CMD ["python", "-m", "asktable_mcp_server.sse_server"]
+CMD ["python", "-m", "asktable_mcp_server.server", "--transport", "sse", "--port", "8095"]
