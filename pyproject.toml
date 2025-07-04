@@ -1,6 +1,6 @@
 [project]
 name = "asktable-mcp-server"
-version = "0.1.9"
+version = "x.x.x"
 description = "asktable_mcp_server project"
 readme = "README.md"
 authors = [
