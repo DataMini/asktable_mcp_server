@@ -129,6 +129,8 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
                 <li>使用 AskTable 查询数据</li>
                 <li>列出 AskTable 中的所有数据</li>
             </ul>
+            <h2>帮助文档</h2>
+            <p>更多详细信息，请访问 <a href="https://docs.asktable.com/docs/integration/mcp/use-asktable-mcp">使用 MCP 访问 AskTable</a></p>
         </body>
         </html>
         """
