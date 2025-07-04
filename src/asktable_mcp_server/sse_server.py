@@ -14,7 +14,7 @@ from asktable_mcp_server.tools import (
     get_asktable_sql,
     get_datasources_info,
 )
-from asktable_mcp_server import __version__
+from asktable_mcp_server.version import __version__
 
 # 配置日志
 logging.basicConfig(
