@@ -207,6 +207,9 @@ def main(base_url: str = None, path_prefix: str = "", port: int = 8095):
     :param port: 服务器端口号
     """
     global mcp
+
+    fastmcp.settings.sse_path = path_prefix + "/sse/"
+    fastmcp.settings.message_path = path_prefix + "/messages/"
     
     # 创建 MCP 服务器实例
     mcp = create_mcp_server(path_prefix=path_prefix, base_url=base_url)
@@ -217,13 +220,13 @@ def main(base_url: str = None, path_prefix: str = "", port: int = 8095):
     logger.info(f"path_prefix: {path_prefix}")
     logger.info(f"port: {port}")
 
+
     # 启动服务器
     mcp.run(
         transport="sse",
         host="0.0.0.0",
         port=port,
-        sse_path=path_prefix + "/sse/",
-        message_path=path_prefix + "/messages/",
+        path=fastmcp.settings.sse_path,
     )
 
 
