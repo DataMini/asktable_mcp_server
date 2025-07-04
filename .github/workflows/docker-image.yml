@@ -8,7 +8,7 @@ on:
       - 'version.txt'
 
 jobs:
-  pypi:
+  pypi-pkg:
     runs-on: ubuntu-latest
     
     steps:
@@ -45,9 +45,9 @@ jobs:
       run: |
         python -m twine upload dist/*
 
-  docker:
+  docker-image:
     runs-on: ubuntu-latest
-    needs: pypi
+    needs: pypi-pkg
 
     steps:
     - name: Checkout code
@@ -80,9 +80,9 @@ jobs:
         platforms: linux/amd64
         # platforms: linux/amd64, linux/arm64
 
-  deploy:
+  deploy-to-saas:
     runs-on: ubuntu-latest
-    needs: docker
+    needs: docker-image
 
     steps:
     - name: Deploy to production server
