@@ -213,7 +213,7 @@ def main(base_url: str = None, path_prefix: str = "", port: int = 8095):
     global mcp
     
     # 创建 MCP 服务器实例
-    mcp = create_mcp_server(path_prefix)
+    mcp = create_mcp_server(path_prefix=path_prefix, base_url=base_url)
     
     # 记录配置信息
     logger.info("启动 SSE 服务器")
