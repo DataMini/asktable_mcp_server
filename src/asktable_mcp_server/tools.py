@@ -16,11 +16,7 @@ async def get_asktable_data(
     :return:
     """
 
-    # 如果没有传入base_url或传入None，使用默认值
-    if base_url is None:
-        base_url = "https://api.asktable.com"
-
-    asktable_client = Asktable(base_url=base_url, api_key=api_key)
+    asktable_client = Asktable(api_key=api_key, base_url=base_url)
     answer_response = asktable_client.answers.create(
         datasource_id=datasource_id, question=question, role_id=role_id
     )
@@ -32,20 +28,17 @@ async def get_asktable_data(
 async def get_asktable_sql(
     api_key, datasource_id, question, base_url=None, role_id=None
 ):
-    # 如果没有传入base_url或传入None，使用默认值
-    if base_url is None:
-        base_url = "https://api.asktable.com"
 
-    asktable_client = Asktable(base_url=base_url, api_key=api_key)
+    asktable_client = Asktable(api_key=api_key, base_url=base_url)
     query_response = asktable_client.sqls.create(
         datasource_id=datasource_id, question=question, role_id=role_id
     )
-    if query_response.query.sql is None:
+    if query_response.query is None:
         return "没有查询到相关信息"
     return query_response.query.sql
 
 
-async def get_datasources_info(api_key, base_url=None, role_id=None):
+async def get_datasources_info(api_key, base_url=None):
     """ "
     返回用户数据库meta_data;
     若输入roleid，则返回该角色可访问的数据库meta_data
@@ -61,7 +54,5 @@ async def get_datasources_info(api_key, base_url=None, role_id=None):
         }
     """
     helper = AskTableHelper(api_key=api_key, base_url=base_url)
-    if role_id is None:
-        return helper.get_datasources_info()
-    else:
-        return helper.get_datasources_info_by_role(role_id=role_id)
+    return helper.get_datasources_info()
+
