@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastmcp import FastMCP
 from fastmcp.server.dependencies import get_http_request
 from starlette.requests import Request
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, HTMLResponse
 import fastmcp
 
 from asktable_mcp_server.tools import (
@@ -64,7 +64,43 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
             return JSONResponse({"status": "initializing", "message": "Server is still initializing"})
         return JSONResponse({"status": "ready", "message": "Server is initialized and ready"})
 
-    @mcp.tool(name="生成SQL")
+    @mcp.custom_route(path_prefix + "/", methods=["GET"])
+    async def home(request: Request):
+        """Welcome page with configuration example"""
+        # 从请求中获取主机名
+        host = request.headers.get("host", "your-asktable-server-host") 
+        scheme = request.url.scheme
+        base_url = f"{scheme}://{host}"
+        
+        markdown_content = f"""# 欢迎访问 AskTable MCP 服务（SSE）!
+
+## 配置示例
+
+在您的 Agent 配置文件中，添加以下配置:
+
+```json
+{{
+    "mcpServers": {{
+        "asktable": {{
+            "type": "sse",
+            "url": "{base_url}{path_prefix}/sse/?apikey=YOUR_API_KEY&datasource_id=YOUR_DATASOURCE_ID",
+            "headers": {{}},
+            "timeout": 300,
+            "sse_read_timeout": 300
+        }}
+    }}
+}}
+```
+
+## 工具
+
+- 使用 AskTable 生成 SQL
+- 使用 AskTable 查询数据
+- 列出 AskTable 中的所有数据
+"""
+        return HTMLResponse(content=markdown_content)
+
+    @mcp.tool(name="使用 AskTable 生成 SQL")
     async def gen_sql(question: str) -> str:
         """
         根据用户查询生成对应的SQL语句
@@ -105,7 +141,7 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
         message = await get_asktable_sql(**params)
         return message
 
-    @mcp.tool(name="查询数据")
+    @mcp.tool(name="使用 AskTable 查询数据")
     async def query(question: str) -> str:
         """
         根据用户的问题，直接返回数据结果
@@ -144,7 +180,7 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
         message = await get_asktable_data(**params)
         return message
 
-    @mcp.tool(name="列出所有数据")
+    @mcp.tool(name="列出 AskTable 中的所有数据")
     async def list_data() -> str:
         """
         获取当前用户apikey下的可用的所有数据库（数据源）信息

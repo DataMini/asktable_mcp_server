@@ -14,7 +14,7 @@ from asktable_mcp_server.sse_server import main as sse_main
 mcp = FastMCP(name="Asktable stdio mcp server running...")
 
 
-@mcp.tool(name='生成SQL')
+@mcp.tool(name='使用 AskTable 生成 SQL')
 async def gen_sql(query: str) -> str:
     """
     根据用户查询生成对应的SQL语句
@@ -46,7 +46,7 @@ async def gen_sql(query: str) -> str:
     return message
 
 
-@mcp.tool(name='查询数据')
+@mcp.tool(name='使用 AskTable 查询数据')
 async def query(query: str) -> str:
     """
     根据用户的问题，直接返回数据结果
@@ -79,7 +79,7 @@ async def query(query: str) -> str:
     return message
 
 
-@mcp.tool(name='列出所有数据')
+@mcp.tool(name='列出 AskTable 中的所有数据')
 async def list_data() -> str:
     """
     获取当前用户apikey下的可用的所有数据库（数据源）信息

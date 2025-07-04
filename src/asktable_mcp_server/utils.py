@@ -3,8 +3,6 @@ from asktable import Asktable
 
 class AskTableHelper:
     def __init__(self, api_key, base_url=None):
-        if base_url is None:
-            base_url = "https://api.asktable.com"
         self.asktable_client = Asktable(base_url=base_url, api_key=api_key)
 
     def get_datasource_ids_by_role(self, role_id):
