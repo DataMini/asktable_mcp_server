@@ -72,14 +72,44 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
         scheme = request.url.scheme
         base_url = f"{scheme}://{host}"
         
-        markdown_content = f"""# 欢迎访问 AskTable MCP 服务（SSE）!
+        content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>AskTable MCP 服务（SSE）</title>
+            <style>
+                body {{
+                    max-width: 800px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    line-height: 1.6;
+                }}
+                pre {{
+                    background: #f5f5f5;
+                    padding: 15px;
+                    border-radius: 5px;
+                    overflow-x: auto;
+                }}
+                code {{
+                    white-space: pre-wrap;
+                }}
+                h1, h2 {{
+                    border-bottom: 1px solid #eee;
+                    padding-bottom: 10px;
+                }}
+                ul {{
+                    padding-left: 20px;
+                }}
+            </style>
+        </head>
+        <body>
+            <h1>欢迎访问 AskTable MCP 服务（SSE）!</h1>
 
-## 配置示例
-
-在您的 Agent 配置文件中，添加以下配置:
-
-```json
-{{
+            <h2>配置示例</h2>
+            <p>在您的 Agent 配置文件中，添加以下配置:</p>
+            <pre><code>{{
     "mcpServers": {{
         "asktable": {{
             "type": "sse",
@@ -89,16 +119,18 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
             "sse_read_timeout": 300
         }}
     }}
-}}
-```
+}}</code></pre>
 
-## 工具
-
-- 使用 AskTable 生成 SQL
-- 使用 AskTable 查询数据
-- 列出 AskTable 中的所有数据
-"""
-        return HTMLResponse(content=markdown_content)
+            <h2>工具</h2>
+            <ul>
+                <li>使用 AskTable 生成 SQL</li>
+                <li>使用 AskTable 查询数据</li>
+                <li>列出 AskTable 中的所有数据</li>
+            </ul>
+        </body>
+        </html>
+        """
+        return HTMLResponse(content=content)
 
     @mcp.tool(name="使用 AskTable 生成 SQL")
     async def gen_sql(question: str) -> str:
