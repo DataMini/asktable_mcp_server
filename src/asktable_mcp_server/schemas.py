@@ -2,7 +2,8 @@ from typing import Annotated, Dict, Any, Optional
 from pydantic import Field
 
 # 共享的参数类型定义
-QuestionParam = Annotated[str, Field(description="用户的自然语言查询描述。示例：生成查询昨天订单总金额的SQL、写一个SQL查询销售额前10的产品、帮我写一个统计各部门员工数量的SQL")]
+QuestionParamGenSQL = Annotated[str, Field(description="用户的自然语言查询描述。示例：生成查询昨天订单总金额的SQL、写一个SQL查询销售额前10的产品、帮我写一个统计各部门员工数量的SQL")]
+QuestionParamQuery = Annotated[str, Field(description="用户的自然语言查询描述。示例：查询昨天订单总金额、查询销售额前10的产品、统计各部门员工数量")]
 
 RoleIdParam = Annotated[Optional[str], Field(description="角色ID，精确控制用户对数据的访问权限，支持库/表/字段/行四级控制。示例：'role_123456'，可以为空（使用默认权限）。详见：https://docs.asktable.com/docs/role-and-permission-management/introduction")]
 

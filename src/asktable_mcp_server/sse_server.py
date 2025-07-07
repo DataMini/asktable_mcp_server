@@ -15,7 +15,8 @@ from asktable_mcp_server.at_apis import (
 )
 from asktable_mcp_server.version import __version__
 from asktable_mcp_server.schemas import (
-    QuestionParam,
+    QuestionParamQuery,
+    QuestionParamGenSQL,
     RoleIdParam,
     RoleVariablesParam,
     GEN_SQL_DESCRIPTION,
@@ -85,7 +86,7 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
 
     @mcp.tool(name="使用 AskTable 查询数据")
     async def query(
-        question: QuestionParam,
+        question: QuestionParamQuery,
         role_id: RoleIdParam = None,
         role_variables: RoleVariablesParam = None
     ) -> dict:
@@ -115,7 +116,7 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
     
     @mcp.tool(name="使用 AskTable 生成 SQL")
     async def gen_sql(
-        question: QuestionParam,
+        question: QuestionParamGenSQL,
         role_id: RoleIdParam = None,
         role_variables: RoleVariablesParam = None
     ) -> dict:

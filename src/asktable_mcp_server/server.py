@@ -8,7 +8,8 @@ from asktable_mcp_server.at_apis import (
 )
 from asktable_mcp_server.sse_server import main as sse_main
 from asktable_mcp_server.schemas import (
-    QuestionParam,
+    QuestionParamQuery,
+    QuestionParamGenSQL,
     RoleIdParam,
     RoleVariablesParam,
     GEN_SQL_DESCRIPTION,
@@ -20,7 +21,7 @@ mcp = FastMCP(name="Asktable stdio mcp server running...")
 
 @mcp.tool(name='使用 AskTable 查询数据')
 async def query(
-    question: QuestionParam,
+    question: QuestionParamQuery,
     role_id: RoleIdParam = None,
     role_variables: RoleVariablesParam = None
 ) -> dict:
@@ -44,7 +45,7 @@ async def query(
 
 @mcp.tool(name='使用 AskTable 生成 SQL')
 async def gen_sql(
-    question: QuestionParam,
+    question: QuestionParamGenSQL,
     role_id: RoleIdParam = None,
     role_variables: RoleVariablesParam = None
 ) -> dict:
