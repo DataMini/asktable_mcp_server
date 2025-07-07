@@ -2,17 +2,18 @@
 import asyncio
 import logging
 from contextlib import asynccontextmanager
+from typing import Annotated, Dict, Any, Optional
 
 from fastmcp import FastMCP
 from fastmcp.server.dependencies import get_http_request
 from starlette.requests import Request
 from starlette.responses import JSONResponse, HTMLResponse
 import fastmcp
+from pydantic import Field
 
 from asktable_mcp_server.tools import (
-    get_asktable_data,
+    get_asktable_answer,
     get_asktable_sql,
-    get_datasources_info,
 )
 from asktable_mcp_server.version import __version__
 
@@ -137,23 +138,21 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
         return HTMLResponse(content=content)
 
     @mcp.tool(name="使用 AskTable 生成 SQL")
-    async def gen_sql(question: str) -> str:
+    async def gen_sql(
+        question: Annotated[str, Field(description="用户的自然语言查询描述。示例：生成查询昨天订单总金额的SQL、写一个SQL查询销售额前10的产品、帮我写一个统计各部门员工数量的SQL")],
+        role_id: Annotated[Optional[str], Field(description="角色ID，用于访问控制，当需要进行精细化的数据访问控制时使用。示例：'role_123456'，可以为空（使用默认权限）。详见：https://docs.asktable.com/docs/role-and-permission-management/introduction")] = None,
+        role_variables: Annotated[Optional[Dict[str, Any]], Field(description="角色变量，用于角色访问控制时的变量传递。示例：{'employee_id': 2}（限定员工可见范围）或{'department_id': 'dept_001'}（限定部门可见范围），可以为空（不使用变量限制）")] = None
+    ) -> dict:
         """
-        根据用户查询生成对应的SQL语句
-        不需要指定数据源ID，该函数已在内部指定了数据源ID，直接发起请求即可
-        该函数将用户的查询转换为SQL语句，仅返回SQL文本，不执行查询。
+        将自然语言查询转换为标准SQL语句。
+        这是一个智能SQL生成工具，可以理解用户的自然语言描述，并生成相应的SQL查询语句。
+        该工具仅返回SQL文本，不会执行查询操作。
 
-        :param question: 用户的查询内容
-                      示例：
-                      - "我需要查询昨天的订单总金额的sql"
-                      - "我要找出销售额前10的产品的sql"
-                      - "统计每个部门的员工数量的sql"
-        :return: 生成的SQL语句字符串
-
-        使用场景：
-            - 需要查看生成的SQL语句
-            - 需要将自然语言转化为SQL查询
-            - 仅需要SQL文本而不需要执行结果
+        适用场景：
+            - 需要将业务需求快速转换为SQL查询语句
+            - 在执行查询前想要检查和验证SQL语句
+            - 需要获取SQL语句用于其他系统或工具
+            - 学习或理解如何编写特定查询的SQL语句
         """
         global server_ready
 
@@ -166,36 +165,37 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
 
         logging.info(f"api_key:{api_key}")
         logging.info(f"datasource_id:{datasource_id}")
+        logging.info(f"role_id:{role_id}")
+        logging.info(f"role_variables:{role_variables}")
 
         params = {
             "api_key": api_key,
             "datasource_id": datasource_id,
             "question": question,
             "base_url": base_url,
+            "role_id": role_id,
+            "role_variables": role_variables,
         }
 
         message = await get_asktable_sql(**params)
         return message
 
     @mcp.tool(name="使用 AskTable 查询数据")
-    async def query(question: str) -> str:
+    async def query(
+        question: Annotated[str, Field(description="用户的自然语言查询描述。示例：查询昨天订单总金额、查询销售额前10的产品、统计各部门员工数量")],
+        role_id: Annotated[Optional[str], Field(description="角色ID，用于访问控制，当需要进行精细化的数据访问控制时使用。示例：'role_123456'，可以为空（使用默认权限）。详见：https://docs.asktable.com/docs/role-and-permission-management/introduction")] = None,
+        role_variables: Annotated[Optional[Dict[str, Any]], Field(description="角色变量，用于角色访问控制时的变量传递。示例：{'employee_id': 2}（限定员工可见范围）或{'department_id': 'dept_001'}（限定部门可见范围），可以为空（不使用变量限制）")] = None
+    ) -> dict:
         """
-        根据用户的问题，直接返回数据结果
-        不需要指定数据源ID，该函数已在内部指定了数据源ID，直接发起请求即可
-        该函数执行用户的查询并返回实际的数据结果或答案，而不是SQL语句。
+        将自然语言查询转换为实际数据结果。
+        这是一个智能数据查询工具，可以理解用户的自然语言描述，并返回相应的查询结果。
 
-        :param question: 用户的查询内容
-                      示例：
-                      - "昨天的订单总金额是多少"
-                      - "列出销售额前10的产品"
-                      - "每个部门有多少员工"
-        :return: 查询的实际结果
-
-        使用场景：
-            - 需要直接获取查询答案
-            - 搜索数据库数据
-            - 需要查看实际数据结果
-            - 不需要SQL细节，只要最终答案与结论
+        适用场景：
+            - 需要快速获取业务数据的查询结果
+            - 直接获取数据分析结果和洞察
+            - 需要以自然语言方式查询数据库
+            - 获取实时数据报表和统计信息
+            - 通过角色访问控制实现数据安全访问
         """
         global server_ready
 
@@ -211,61 +211,13 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
             "datasource_id": datasource_id,
             "question": question,
             "base_url": base_url,
+            "role_id": role_id,
+            "role_variables": role_variables,
         }
 
-        message = await get_asktable_data(**params)
+        message = await get_asktable_answer(**params)
         return message
 
-    @mcp.tool(name="列出 AskTable 中的所有数据")
-    async def list_data() -> str:
-        """
-        获取当前用户apikey下的可用的所有数据库（数据源）信息
-
-        该函数会自动获取当前用户有权限访问的全部数据源，并返回每个数据源的关键信息，包括数据源ID、推理引擎类型和数据库描述。
-
-        :return: 如果该用户的数据库有表的话，会返回数据源信息列表，每个元素为字典，包含以下字段：
-            - datasource_id: 数据源唯一ID
-            - 数据库引擎: 数据源的推理引擎类型（如：mysql、excel、postgresql等）
-            - 数据库描述: 数据源的详细描述信息
-
-                如果该用户的数据库中没有表，则返回"[目前该用户的数据库中还没有数据]"
-        示例返回值:
-        example1 - 对应数据库中有表的情况:
-            [
-                {
-                    "datasource_id": "ds_6iewvP4cpSyhO76P2Tv8MW",
-                    "数据库引擎": "mysql",
-                    "数据库描述": "包含大学的课程、教授、学生、部门、奖项、宿舍管理、考试成绩等信息的综合数据库。"
-                },
-                {
-                    "datasource_id": "ds_43haVWseJhEizg2GHbErMu",
-                    "数据库引擎": "excel",
-                    "数据库描述": "包含各省份的经济指标与电信行业相关数据，帮助分析区域经济与电信发展的关系。"
-                },
-                {
-                    "datasource_id": "ds_2Ds3Ude2MkYa3FAWvyVSRG",
-                    "数据库引擎": "mysql",
-                    "数据库描述": "该数据库用于管理基金销售相关信息，包括订单、产品和销售员等数据表。"
-                }
-            ]
-
-        example2 - 对应数据库中没有表的情况:
-            "该用户还没有创建任何数据库"
-
-        使用场景：
-            - 用户需要查看自己有哪些数据库，获取这些数据库的datasource_id、该数据库所用的数据库引擎和描述信息，以供后续需要。
-        """
-        global server_ready
-
-        if not server_ready:
-            return "Server is still initializing, please wait"
-
-        request = get_http_request()
-        api_key = request.query_params.get("apikey", None)
-
-        result = await get_datasources_info(api_key=api_key, base_url=base_url)
-        logging.info(result)
-        return result["data"]
 
     return mcp
 
