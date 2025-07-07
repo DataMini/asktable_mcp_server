@@ -1,5 +1,5 @@
 from asktable import Asktable
-
+import logging
 
 async def get_asktable_answer(
     api_key, datasource_id, question, base_url=None, role_id: str=None, role_variables: dict = None
@@ -16,6 +16,8 @@ async def get_asktable_answer(
     """
 
     asktable_client = Asktable(api_key=api_key, base_url=base_url)
+    logging.info(f"api_key: {api_key}")
+    logging.info(f"base_url: {base_url}")
     answer_response = asktable_client.answers.create(
         datasource_id=datasource_id, 
         question=question, 
