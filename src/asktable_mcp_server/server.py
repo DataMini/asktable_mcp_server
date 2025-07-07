@@ -18,30 +18,6 @@ from asktable_mcp_server.schemas import (
 mcp = FastMCP(name="Asktable stdio mcp server running...")
 
 
-@mcp.tool(name='使用 AskTable 生成 SQL')
-async def gen_sql(
-    question: QuestionParam,
-    role_id: RoleIdParam = None,
-    role_variables: RoleVariablesParam = None
-) -> dict:
-    """
-    {description}
-    """.format(description=GEN_SQL_DESCRIPTION)
-    # 构建基本参数
-    params = {
-        "api_key": os.getenv("API_KEY"),
-        "datasource_id": os.getenv("DATASOURCE_ID"),
-        "question": question,
-        "base_url": os.getenv("BASE_URL") or None,
-        "role_id": role_id,
-        "role_variables": role_variables,
-    }
-
-    # 调用API获取SQL
-    message = await get_asktable_sql(**params)
-    return message
-
-
 @mcp.tool(name='使用 AskTable 查询数据')
 async def query(
     question: QuestionParam,
@@ -65,6 +41,29 @@ async def query(
     message = await get_asktable_answer(**params)
     return message
 
+
+@mcp.tool(name='使用 AskTable 生成 SQL')
+async def gen_sql(
+    question: QuestionParam,
+    role_id: RoleIdParam = None,
+    role_variables: RoleVariablesParam = None
+) -> dict:
+    """
+    {description}
+    """.format(description=GEN_SQL_DESCRIPTION)
+    # 构建基本参数
+    params = {
+        "api_key": os.getenv("API_KEY"),
+        "datasource_id": os.getenv("DATASOURCE_ID"),
+        "question": question,
+        "base_url": os.getenv("BASE_URL") or None,
+        "role_id": role_id,
+        "role_variables": role_variables,
+    }
+
+    # 调用API获取SQL
+    message = await get_asktable_sql(**params)
+    return message
 
 
 def main():

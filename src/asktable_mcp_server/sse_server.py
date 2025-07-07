@@ -83,41 +83,6 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
         content = get_home_page_html(__version__, base_url, path_prefix)
         return HTMLResponse(content=content)
 
-    @mcp.tool(name="使用 AskTable 生成 SQL")
-    async def gen_sql(
-        question: QuestionParam,
-        role_id: RoleIdParam = None,
-        role_variables: RoleVariablesParam = None
-    ) -> dict:
-        """
-        {description}
-        """.format(description=GEN_SQL_DESCRIPTION)
-        global server_ready
-
-        if not server_ready:
-            return "Server is still initializing, please wait"
-
-        request = get_http_request()
-        api_key = request.query_params.get("apikey", None)
-        datasource_id = request.query_params.get("datasource_id", None)
-
-        logging.info(f"api_key:{api_key}")
-        logging.info(f"datasource_id:{datasource_id}")
-        logging.info(f"role_id:{role_id}")
-        logging.info(f"role_variables:{role_variables}")
-
-        params = {
-            "api_key": api_key,
-            "datasource_id": datasource_id,
-            "question": question,
-            "base_url": base_url,
-            "role_id": role_id,
-            "role_variables": role_variables,
-        }
-
-        message = await get_asktable_sql(**params)
-        return message
-
     @mcp.tool(name="使用 AskTable 查询数据")
     async def query(
         question: QuestionParam,
@@ -147,7 +112,36 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
 
         message = await get_asktable_answer(**params)
         return message
+    
+    @mcp.tool(name="使用 AskTable 生成 SQL")
+    async def gen_sql(
+        question: QuestionParam,
+        role_id: RoleIdParam = None,
+        role_variables: RoleVariablesParam = None
+    ) -> dict:
+        """
+        {description}
+        """.format(description=GEN_SQL_DESCRIPTION)
+        global server_ready
 
+        if not server_ready:
+            return "Server is still initializing, please wait"
+
+        request = get_http_request()
+        api_key = request.query_params.get("apikey", None)
+        datasource_id = request.query_params.get("datasource_id", None)
+
+        params = {
+            "api_key": api_key,
+            "datasource_id": datasource_id,
+            "question": question,
+            "base_url": base_url,
+            "role_id": role_id,
+            "role_variables": role_variables,
+        }
+
+        message = await get_asktable_sql(**params)
+        return message
 
     return mcp
 
