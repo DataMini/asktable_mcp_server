@@ -99,8 +99,9 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
             return "Server is still initializing, please wait"
 
         request = get_http_request()
-        api_key = request.query_params.get("apikey", None)
-        datasource_id = request.query_params.get("datasource_id", None)
+        params = request.query_params
+        api_key = params.get("API_KEY", params.get("api_key", params.get("apikey", None)))
+        datasource_id = params.get("DATASOURCE_ID", params.get("datasource_id", None))
 
         params = {
             "api_key": api_key,
@@ -129,8 +130,9 @@ def create_mcp_server(path_prefix: str = "", base_url: str = None):
             return "Server is still initializing, please wait"
 
         request = get_http_request()
-        api_key = request.query_params.get("apikey", None)
-        datasource_id = request.query_params.get("datasource_id", None)
+        params = request.query_params
+        api_key = params.get("API_KEY", params.get("api_key", params.get("apikey", None)))
+        datasource_id = params.get("DATASOURCE_ID", params.get("datasource_id", None))
 
         params = {
             "api_key": api_key,
