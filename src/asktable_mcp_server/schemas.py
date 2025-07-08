@@ -79,7 +79,7 @@ def get_home_page_html(version: str, base_url: str, path_prefix: str) -> str:
     "mcpServers": {{
         "asktable": {{
             "type": "sse",
-            "url": "{base_url}{path_prefix}/sse/?apikey=YOUR_API_KEY&datasource_id=YOUR_DATASOURCE_ID",
+            "url": "{base_url}{path_prefix}/sse/?api_key=YOUR_API_KEY&datasource_id=YOUR_DATASOURCE_ID",
             "headers": {{}},
             "timeout": 300,
             "sse_read_timeout": 300
